@@ -1,5 +1,6 @@
 package net.andrasia.kiryu144.npctrade;
 
+import net.andrasia.kiryu144.npctrade.commands.TradeNPC;
 import net.andrasia.kiryu144.npctrade.traits.Trader;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.trait.TraitInfo;
@@ -23,6 +24,9 @@ public class Main extends JavaPlugin {
 
         /* Register traits */
         CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(Trader.class));
+
+        /* Register commands */
+        this.getCommand("tradenpc").setExecutor(new TradeNPC());
     }
 
 }

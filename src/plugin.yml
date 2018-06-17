@@ -4,3 +4,7 @@ main: net.andrasia.kiryu144.npctrade.Main
 description: NPCTrade by Kiryu144
 author: Kiryu144
 depend: [Citizens]
+commands:
+  tradenpc:
+    usage: /<command>
+    description: NPCTrade

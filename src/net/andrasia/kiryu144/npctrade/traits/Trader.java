@@ -10,11 +10,15 @@ import org.bukkit.event.EventHandler;
 
 @TraitName("trader")
 public class Trader extends Trait {
+    protected String tradeName = null;
+
     public Trader() {
         super("trader");
     }
 
-    String tradeName = null;
+    public void setTradeName(String trade){
+        tradeName = trade;
+    }
 
     public void load(DataKey key) {
         tradeName = key.getString("tradeName");
