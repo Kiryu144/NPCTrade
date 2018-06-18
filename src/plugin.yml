@@ -3,7 +3,7 @@ version: 1.0
 main: net.andrasia.kiryu144.npctrade.Main
 description: NPCTrade by Kiryu144
 author: Kiryu144
-depend: [Citizens]
+depend: [Citizens, Vault]
 commands:
   tradenpc:
     usage: /<command>
