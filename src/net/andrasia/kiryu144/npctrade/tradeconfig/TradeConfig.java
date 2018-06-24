@@ -39,4 +39,8 @@ public class TradeConfig {
     public void openInventory(Player p){
         p.openInventory(inventory);
     }
+
+    public Inventory getInventory() {
+        return this.inventory;
+    }
 }

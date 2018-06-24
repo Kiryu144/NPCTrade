@@ -42,6 +42,9 @@ public class Main extends JavaPlugin {
         /* Register commands */
         this.getCommand("tradenpc").setExecutor(new TradeNPC());
 
+        /* Register EventHandlers */
+        this.getServer().getPluginManager().registerEvents(new TradeConfigManager(), this);
+
         /* Testing purposes only */
         TradeConfig config = new TradeConfig();
         config.addTrade(new Trade(new ItemStack(Material.MELON), 20, 10), 0);
