@@ -26,10 +26,10 @@ public class Trade {
 
         String buySellMsg = "";
         if(buyPrice >= 0){
-            buySellMsg += String.format("§aBuy: §b%.2f\n", buyPrice);
+            buySellMsg += String.format("§aBuy: §b%.2f ", buyPrice);
         }
         if(sellPrice >= 0){
-            buySellMsg += String.format("§aSell: §b%.2f\n", sellPrice);
+            buySellMsg += String.format("§aSell: §b%.2f ", sellPrice);
         }
 
         List<String> lore = new ArrayList<>();
