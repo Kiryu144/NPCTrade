@@ -43,4 +43,8 @@ public class TradeConfig {
     public Inventory getInventory() {
         return this.inventory;
     }
+
+    public Trade getTrade(int rawSlot){
+        return trades.get(rawSlot);
+    }
 }

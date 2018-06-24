@@ -19,6 +19,7 @@ import java.util.logging.Level;
 public class Main extends JavaPlugin {
 
     public static Plugin instance;
+    public static Economy economy;
 
     public void onEnable() {
         instance = this;
@@ -35,6 +36,8 @@ public class Main extends JavaPlugin {
             getServer().getPluginManager().disablePlugin(this);
         }
         RegisteredServiceProvider<Economy> economyProvider = getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
+        economy = economyProvider.getProvider();
+
 
         /* Register traits */
         CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(Trader.class));
