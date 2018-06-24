@@ -2,6 +2,8 @@ package net.andrasia.kiryu144.npctrade;
 
 import net.andrasia.kiryu144.kiryucore.KiryuCore;
 import net.andrasia.kiryu144.kiryucore.config.YamlConfig;
+import net.andrasia.kiryu144.kiryucore.console.KiryuLogger;
+import net.andrasia.kiryu144.kiryucore.util.KiryuSimpleSerialization;
 import net.andrasia.kiryu144.npctrade.commands.TradeNPC;
 import net.andrasia.kiryu144.npctrade.tradeconfig.Trade;
 import net.andrasia.kiryu144.npctrade.tradeconfig.TradeConfig;
@@ -11,13 +13,16 @@ import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.trait.TraitInfo;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.ChatColor;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.Material;
+import java.io.File;
 
+import java.io.IOException;
 import java.util.logging.Level;
 
 public class Main extends JavaPlugin {
@@ -67,6 +72,9 @@ public class Main extends JavaPlugin {
             messageConfig.save();
         }
 
+        //tradeconfigs
+        this.parseTradeConfigs();
+
 
         /* Testing purposes only */
         TradeConfig config = new TradeConfig();
@@ -76,6 +84,33 @@ public class Main extends JavaPlugin {
         config.addTrade(new Trade(new ItemStack(Material.EMERALD), 1520, 1051), 5);
         config.generateInventory();
         TradeConfigManager.addTradeConfig("testing", config);
+    }
+
+    public void parseTradeConfigs() {
+        File dataFolder = new File(this.getDataFolder() + "\\tradeconfigs");
+        if(!dataFolder.exists()){
+            dataFolder.mkdirs();
+        }else{
+            for(File file : dataFolder.listFiles()){
+                if(file.getName().endsWith(".yml")){
+                    YamlConfiguration configuration = new YamlConfiguration();
+                    try {
+                        configuration.load(file);
+                    } catch (Exception ignored) { /* pass */}
+
+                    TradeConfig config = new TradeConfig();
+                    for(String resultItem : configuration.getKeys(false)){
+                        ItemStack item = KiryuSimpleSerialization.getSimpleItemStack(resultItem);
+                        int slot = configuration.getInt(String.format("%s.slot", resultItem));
+                        float buyPrice = (float) configuration.getDouble(String.format("%s.buy", resultItem));
+                        float sellPrice = (float) configuration.getDouble(String.format("%s.sell", resultItem));
+                        config.addTrade(new Trade(item, buyPrice, sellPrice), slot);
+                    }
+                    config.generateInventory();
+                    TradeConfigManager.addTradeConfig(file.getName().replace(".yml", ""), config);
+                }
+            }
+        }
     }
 
     public static String formatFunds(double amount){

@@ -1,5 +1,6 @@
 package net.andrasia.kiryu144.npctrade.tradeconfig;
 
+import net.andrasia.kiryu144.kiryucore.console.KiryuLogger;
 import net.andrasia.kiryu144.npctrade.Main;
 import net.milkbowl.vault.Vault;
 import org.bukkit.OfflinePlayer;
@@ -21,7 +22,9 @@ public class TradeConfigManager implements Listener {
 
     public static void addTradeConfig(String name, TradeConfig config){
         if(tradeConfigs.containsKey(name.toLowerCase())){
-            Main.instance.getLogger().warning("Tradeconfig " + name.toLowerCase() + " already exists. Overwriting!");
+            KiryuLogger.error("Tradeconfig " + name.toLowerCase() + " already exists. Overwriting!");
+        }else{
+            KiryuLogger.info(String.format("Tradeconfig §b%s§r added", name));
         }
         tradeConfigs.put(name.toLowerCase(), config);
         tradeConfigInvis.put(config.getInventory(), config);
