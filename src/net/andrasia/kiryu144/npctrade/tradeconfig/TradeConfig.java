@@ -31,7 +31,7 @@ public class TradeConfig {
         for(int i = 0; i < 6*9; i++) {
             Trade trade = trades.get(i);
             if(trade != null) {
-                inventory.setItem(i, trade.getShopItem());
+                inventory.setItem(i, trade.getDisplayItem());
             }
         }
     }
