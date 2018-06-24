@@ -2,8 +2,11 @@ package net.andrasia.kiryu144.npctrade.tradeconfig;
 
 import net.andrasia.kiryu144.npctrade.Main;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryEvent;
+import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 
@@ -29,14 +32,10 @@ public class TradeConfigManager implements Listener {
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event){
-        /* Basic filtering, hoping for some performance gainzzz */
-        if(event.getClickedInventory().getType() == InventoryType.CHEST){
-            Inventory topInventory = event.getWhoClicked().getOpenInventory().getTopInventory();
-            TradeConfig config = tradeConfigInvis.get(topInventory);
-            if(config != null){
-                event.setCancelled(true);
-            }
+        Inventory topInventory = event.getWhoClicked().getOpenInventory().getTopInventory();
+        TradeConfig config = tradeConfigInvis.get(topInventory);
+        if(config != null){
+            event.setCancelled(true);
         }
     }
-
 }
