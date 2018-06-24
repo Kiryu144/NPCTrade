@@ -43,7 +43,7 @@ public class TradeConfigManager implements Listener {
             }
             p.getInventory().addItem(item);
             Main.economy.withdrawPlayer(p, item.getAmount()*trade.getBuyPrice());
-            p.sendMessage(String.format("§c%.02f §bhave been withdrawn from your account!", item.getAmount()*trade.getBuyPrice())); //TODO Configmsg
+            p.sendMessage(String.format(Main.messageConfig.getYamlConfiguration().getString("trade_buy_success"), Main.formatFunds(item.getAmount()*trade.getBuyPrice())));
         }else if(!buy){ /* Sell */
             for(int i = 0; i < p.getInventory().getSize(); i++){
                 ItemStack pitem = p.getInventory().getItem(i);
@@ -51,7 +51,7 @@ public class TradeConfigManager implements Listener {
                     double sellAmount = (allAtOnce) ? pitem.getAmount() : 1;
                     pitem.setAmount(pitem.getAmount() - (int) sellAmount);
                     Main.economy.depositPlayer(p, sellAmount*trade.getSellPrice());
-                    p.sendMessage(String.format("§2%.02f §bhave been deposited to your account!", sellAmount * trade.getSellPrice())); //TODO Configmsg
+                    p.sendMessage(String.format(Main.messageConfig.getYamlConfiguration().getString("trade_sell_success"), Main.formatFunds(sellAmount * trade.getSellPrice())));
                     break;
                 }
             }

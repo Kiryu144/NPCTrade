@@ -1,5 +1,7 @@
 package net.andrasia.kiryu144.npctrade;
 
+import net.andrasia.kiryu144.kiryucore.KiryuCore;
+import net.andrasia.kiryu144.kiryucore.config.YamlConfig;
 import net.andrasia.kiryu144.npctrade.commands.TradeNPC;
 import net.andrasia.kiryu144.npctrade.tradeconfig.Trade;
 import net.andrasia.kiryu144.npctrade.tradeconfig.TradeConfig;
@@ -8,6 +10,8 @@ import net.andrasia.kiryu144.npctrade.traits.Trader;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.trait.TraitInfo;
 import net.milkbowl.vault.economy.Economy;
+import org.bukkit.ChatColor;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -21,18 +25,23 @@ public class Main extends JavaPlugin {
     public static Plugin instance;
     public static Economy economy;
 
+    public static YamlConfig messageConfig;
+
     public void onEnable() {
         instance = this;
 
+        /* Initialize KiryuCore */
+        KiryuCore.init(this, ChatColor.AQUA);
+
         /* Initialize Citizens2 API */
         if(getServer().getPluginManager().getPlugin("Citizens") == null || !getServer().getPluginManager().getPlugin("Citizens").isEnabled()) {
-            getLogger().log(Level.SEVERE, "Citizens 2.0 not found or not enabled");
+            getLogger().log(Level.SEVERE, "Citizens 2.0 not found or not enabled!");
             getServer().getPluginManager().disablePlugin(this);
         }
 
         /* Initialize Vault API */
         if(getServer().getPluginManager().getPlugin("Vault") == null || !getServer().getPluginManager().getPlugin("Vault").isEnabled()) {
-            getLogger().log(Level.SEVERE, "Vault not found or not enabled");
+            getLogger().log(Level.SEVERE, "Vault not found or not enabled!");
             getServer().getPluginManager().disablePlugin(this);
         }
         RegisteredServiceProvider<Economy> economyProvider = getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
@@ -48,6 +57,17 @@ public class Main extends JavaPlugin {
         /* Register EventHandlers */
         this.getServer().getPluginManager().registerEvents(new TradeConfigManager(), this);
 
+        /* Config */
+        //messages
+        YamlConfiguration yamlConfiguration = new YamlConfiguration();
+        yamlConfiguration.set("trade_buy_success", "§c%s §bhave been withdrawn from your account!");
+        yamlConfiguration.set("trade_sell_success", "§2%s §bhave been deposited to your account!");
+        messageConfig = new YamlConfig("messages.yml");
+        if(messageConfig.copyDefaults(yamlConfiguration)){
+            messageConfig.save();
+        }
+
+
         /* Testing purposes only */
         TradeConfig config = new TradeConfig();
         config.addTrade(new Trade(new ItemStack(Material.MELON), 20, 10), 0);
@@ -56,6 +76,10 @@ public class Main extends JavaPlugin {
         config.addTrade(new Trade(new ItemStack(Material.EMERALD), 1520, 1051), 5);
         config.generateInventory();
         TradeConfigManager.addTradeConfig("testing", config);
+    }
+
+    public static String formatFunds(double amount){
+        return String.format("%.2f", amount);
     }
 
 }
