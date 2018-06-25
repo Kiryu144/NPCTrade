@@ -45,7 +45,7 @@ public class TradeConfig {
     }
 
     public Trade getTrade(int rawSlot){
-        if(rawSlot >= inventory.getSize()){
+        if(rawSlot >= inventory.getSize() || rawSlot < 0){
             return null;
         }else {
             return trades.get(rawSlot);
