@@ -93,7 +93,10 @@ public class Main extends JavaPlugin {
                     YamlConfiguration configuration = new YamlConfiguration();
                     try {
                         configuration.load(file);
-                    } catch (Exception ignored) { /* pass */}
+                    } catch (Exception ignored) {
+                        KiryuLogger.error(String.format("Could not parse tradeconfig §e%s", file.getName()));
+                    }
+
 
                     TradeConfig config = new TradeConfig();
                     for(String resultItem : configuration.getKeys(false)){
