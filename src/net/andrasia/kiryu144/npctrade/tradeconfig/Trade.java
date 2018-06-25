@@ -1,5 +1,6 @@
 package net.andrasia.kiryu144.npctrade.tradeconfig;
 
+import net.andrasia.kiryu144.npctrade.Main;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -24,16 +25,13 @@ public class Trade {
         ItemStack item = new ItemStack(this.item.getType(), 1, this.item.getDurability());
         ItemMeta meta = item.getItemMeta();
 
-        String buySellMsg = "";
+        List<String> lore = new ArrayList<>();
         if(buyPrice >= 0){
-            buySellMsg += String.format("§aBuy: §b%.2f ", buyPrice);
+            lore.add(String.format(Main.messageConfig.getYamlConfiguration().getString("trade_buy_price"), Main.formatFunds(buyPrice)));
         }
         if(sellPrice >= 0){
-            buySellMsg += String.format("§aSell: §b%.2f ", sellPrice);
+            lore.add(String.format(Main.messageConfig.getYamlConfiguration().getString("trade_sell_price"), Main.formatFunds(sellPrice)));
         }
-
-        List<String> lore = new ArrayList<>();
-        lore.add(buySellMsg);
         meta.setLore(lore);
 
         item.setItemMeta(meta);

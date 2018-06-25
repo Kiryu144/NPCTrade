@@ -67,6 +67,9 @@ public class Main extends JavaPlugin {
         YamlConfiguration yamlConfiguration = new YamlConfiguration();
         yamlConfiguration.set("trade_buy_success", "§c%s §bhave been withdrawn from your account!");
         yamlConfiguration.set("trade_sell_success", "§2%s §bhave been deposited to your account!");
+        yamlConfiguration.set("trade_buy_price", "§2§lPurchase price: §r§b%s");
+        yamlConfiguration.set("trade_sell_price", "§2§lSelling price: §r§b%s");
+
         messageConfig = new YamlConfig("messages.yml");
         if(messageConfig.copyDefaults(yamlConfiguration)){
             messageConfig.save();
@@ -74,20 +77,10 @@ public class Main extends JavaPlugin {
 
         //tradeconfigs
         this.parseTradeConfigs();
-
-
-        /* Testing purposes only */
-        TradeConfig config = new TradeConfig();
-        config.addTrade(new Trade(new ItemStack(Material.MELON), 20, 10), 0);
-        config.addTrade(new Trade(new ItemStack(Material.PUMPKIN), 220, 10), 1);
-        config.addTrade(new Trade(new ItemStack(Material.DIAMOND), 22350, 1140), 4);
-        config.addTrade(new Trade(new ItemStack(Material.EMERALD), 1520, 1051), 5);
-        config.generateInventory();
-        TradeConfigManager.addTradeConfig("testing", config);
     }
 
     public void parseTradeConfigs() {
-        File dataFolder = new File(this.getDataFolder() + "\\tradeconfigs");
+        File dataFolder = new File(this.getDataFolder() + File.separator + "tradeconfigs");
         if(!dataFolder.exists()){
             dataFolder.mkdirs();
         }else{
