@@ -34,7 +34,7 @@ public class TradeConfigManager implements Listener {
         return tradeConfigs.get(name.toLowerCase());
     }
 
-    public void trade(boolean buy, boolean allAtOnce, Trade trade, Player p){
+    public static void trade(boolean buy, boolean allAtOnce, Trade trade, Player p){
         double funds = Main.economy.getBalance(p);
         double maxBuyItems = Math.floor(funds / trade.getBuyPrice()); /* Maximum amount of items the player can buy with his current funds */
         ItemStack item = trade.getItem();
@@ -62,7 +62,7 @@ public class TradeConfigManager implements Listener {
     }
 
     @EventHandler
-    public void onInventoryClick(InventoryClickEvent event){
+    public static void onInventoryClick(InventoryClickEvent event){
         Inventory topInventory = event.getWhoClicked().getOpenInventory().getTopInventory();
         TradeConfig config = tradeConfigInvis.get(topInventory);
         if(config != null){ /* Found config involving current inventory */
@@ -71,11 +71,16 @@ public class TradeConfigManager implements Listener {
                 Trade trade = config.getTrade(event.getRawSlot());
                 if(trade != null) { /* Found trade that was clicked on */
                     if(event.isLeftClick() || event.isRightClick()){
-                        this.trade(event.isLeftClick(), event.isShiftClick(), trade, (Player) event.getWhoClicked());
+                        trade(event.isLeftClick(), event.isShiftClick(), trade, (Player) event.getWhoClicked());
                     }
                 }
             }
         }
+    }
+
+    public static void dump() {
+        tradeConfigs.clear();
+        tradeConfigInvis.clear();
     }
 
 }

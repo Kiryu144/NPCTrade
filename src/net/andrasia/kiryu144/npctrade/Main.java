@@ -52,7 +52,6 @@ public class Main extends JavaPlugin {
         RegisteredServiceProvider<Economy> economyProvider = getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
         economy = economyProvider.getProvider();
 
-
         /* Register traits */
         CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(Trader.class));
 
@@ -63,7 +62,11 @@ public class Main extends JavaPlugin {
         this.getServer().getPluginManager().registerEvents(new TradeConfigManager(), this);
 
         /* Config */
-        //messages
+        reloadConfigs();
+    }
+
+    public void reloadConfigs() {
+        /* Messages */
         YamlConfiguration yamlConfiguration = new YamlConfiguration();
         yamlConfiguration.set("trade_buy_success", "§c%s §bhave been withdrawn from your account!");
         yamlConfiguration.set("trade_sell_success", "§2%s §bhave been deposited to your account!");
@@ -75,7 +78,8 @@ public class Main extends JavaPlugin {
             messageConfig.save();
         }
 
-        //tradeconfigs
+        /* Trade configs */
+        TradeConfigManager.dump();
         this.parseTradeConfigs();
     }
 
