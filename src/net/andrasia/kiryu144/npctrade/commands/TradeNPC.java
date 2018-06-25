@@ -37,16 +37,19 @@ public class TradeNPC implements CommandExecutor {
             return true;
         }
 
-        if(args.length == 1 && args[1].equalsIgnoreCase("reload")){ /* /tradeconfig reload */
+        if(args.length == 1 && args[0].equalsIgnoreCase("reload")){ /* /tradeconfig reload */
             Main.instance.reloadConfig();
             KiryuLogger.info("Reloaded configs!");
             if(sender instanceof Player){
                 sender.sendMessage("§2§lReloaded configs!");
             }
+            return true;
         }
 
         /* If no proper command is given */
+        sender.sendMessage("§bCommands:");
         sender.sendMessage("§bUsage: §6/tradenpc set <tradeconfig>");
+        sender.sendMessage("§bUsage: §6/tradenpc reload");
         return true;
     }
 }
