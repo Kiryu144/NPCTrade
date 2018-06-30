@@ -11,6 +11,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.*;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import net.andrasia.kiryu144.kiryucore.util.InventoryUtils;
 
 import java.util.HashMap;
 
@@ -34,30 +35,29 @@ public class TradeConfigManager implements Listener {
         return tradeConfigs.get(name.toLowerCase());
     }
 
-    public static void trade(boolean buy, boolean allAtOnce, Trade trade, Player p){
-        double funds = Main.economy.getBalance(p);
-        double maxBuyItems = Math.floor(funds / trade.getBuyPrice()); /* Maximum amount of items the player can buy with his current funds */
-        ItemStack item = trade.getItem();
+    public static void buy(Trade trade, Player p, boolean max){
+        ItemStack item = trade.getItem().clone();
+        item.setAmount((max) ? (int) (Math.floor(Main.economy.getBalance(p) / trade.getBuyPrice())) : 1); //Sets amount to 1, except max is true, then the maximum amount the player has money for
+        if(item.getAmount() > 64){
+            item.setAmount(64);
+        }
 
-        if(buy && maxBuyItems > 0){
-            item.setAmount(1);
-            if(allAtOnce){
-                item.setAmount((maxBuyItems <= 64) ? (int) maxBuyItems : 64);
-            }
-            p.getInventory().addItem(item);
-            Main.economy.withdrawPlayer(p, item.getAmount()*trade.getBuyPrice());
-            p.sendMessage(String.format(Main.messageConfig.getYamlConfiguration().getString("trade_buy_success"), Main.formatFunds(item.getAmount()*trade.getBuyPrice())));
-        }else if(!buy){ /* Sell */
-            for(int i = 0; i < p.getInventory().getSize(); i++){
-                ItemStack pitem = p.getInventory().getItem(i);
-                if(pitem != null && pitem.isSimilar(item)){
-                    double sellAmount = (allAtOnce) ? pitem.getAmount() : 1;
-                    pitem.setAmount(pitem.getAmount() - (int) sellAmount);
-                    Main.economy.depositPlayer(p, sellAmount*trade.getSellPrice());
-                    p.sendMessage(String.format(Main.messageConfig.getYamlConfiguration().getString("trade_sell_success"), Main.formatFunds(sellAmount * trade.getSellPrice())));
-                    break;
-                }
-            }
+        Main.economy.withdrawPlayer(p, item.getAmount() * trade.getBuyPrice());
+        p.sendMessage(String.format(Main.messageConfig.getYamlConfiguration().getString("trade_buy_success"), Main.formatFunds(item.getAmount() * trade.getBuyPrice())));
+
+        InventoryUtils.safelyAddItemStack(p, item);
+    }
+
+    public static void sell(Trade trade, Player p, boolean max){
+        ItemStack item = trade.getItem().clone();
+        int slot = InventoryUtils.getSlotMatchingItemStack(p.getInventory(), item);
+        if(slot >= 0){
+            ItemStack playerItem = p.getInventory().getItem(slot);
+            int sellAmount = (max) ? playerItem.getAmount() : 1;
+            playerItem.setAmount(playerItem.getAmount() - sellAmount);
+
+            Main.economy.depositPlayer(p, sellAmount * trade.getSellPrice());
+            p.sendMessage(String.format(Main.messageConfig.getYamlConfiguration().getString("trade_sell_success"), Main.formatFunds(sellAmount * trade.getSellPrice())));
         }
     }
 
@@ -70,8 +70,10 @@ public class TradeConfigManager implements Listener {
             if(event.getRawSlot() < config.getInventory().getSize()){ /* Slot is inside the trading thingy */
                 Trade trade = config.getTrade(event.getRawSlot());
                 if(trade != null) { /* Found trade that was clicked on */
-                    if(event.isLeftClick() || event.isRightClick()){
-                        trade(event.isLeftClick(), event.isShiftClick(), trade, (Player) event.getWhoClicked());
+                    if(event.isLeftClick()){
+                        buy(trade, (Player) event.getWhoClicked(), event.isShiftClick());
+                    }else if(event.isRightClick()){
+                        sell(trade, (Player) event.getWhoClicked(), event.isShiftClick());
                     }
                 }
             }
