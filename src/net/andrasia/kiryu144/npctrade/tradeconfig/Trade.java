@@ -53,4 +53,12 @@ public class Trade {
     public float getSellPrice() {
         return sellPrice;
     }
+
+    public boolean isBuyable() {
+        return this.buyPrice >= 0;
+    }
+
+    public boolean isSellable() {
+        return this.sellPrice >= 0;
+    }
 }

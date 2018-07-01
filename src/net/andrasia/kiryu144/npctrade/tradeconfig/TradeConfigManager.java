@@ -54,10 +54,11 @@ public class TradeConfigManager implements Listener {
         if(slot >= 0){
             ItemStack playerItem = p.getInventory().getItem(slot);
             int sellAmount = (max) ? playerItem.getAmount() : 1;
-            playerItem.setAmount(playerItem.getAmount() - sellAmount);
 
             Main.economy.depositPlayer(p, sellAmount * trade.getSellPrice());
             p.sendMessage(String.format(Main.messageConfig.getYamlConfiguration().getString("trade_sell_success"), Main.formatFunds(sellAmount * trade.getSellPrice())));
+            playerItem.setAmount(playerItem.getAmount() - sellAmount);
+
         }
     }
 
@@ -70,9 +71,12 @@ public class TradeConfigManager implements Listener {
             if(event.getRawSlot() < config.getInventory().getSize()){ /* Slot is inside the trading thingy */
                 Trade trade = config.getTrade(event.getRawSlot());
                 if(trade != null) { /* Found trade that was clicked on */
-                    if(event.isLeftClick()){
+                    if(event.getClick() == ClickType.MIDDLE){ /* Trying to prevent some bug where the inventory of the player gets spammes with items */
+                        return;
+                    }
+                    if(event.isLeftClick() && trade.isBuyable()){
                         buy(trade, (Player) event.getWhoClicked(), event.isShiftClick());
-                    }else if(event.isRightClick()){
+                    }else if(event.isRightClick() && trade.isSellable()){
                         sell(trade, (Player) event.getWhoClicked(), event.isShiftClick());
                     }
                 }
