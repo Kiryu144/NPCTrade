@@ -1,9 +1,10 @@
 name: NPCTrade
 version: 1.0
-main: net.andrasia.kiryu144.npctrade.Main
+main: net.andrasia.kiryu144.npctrade.NPCTrade
 description: NPCTrade by Kiryu144
 author: Kiryu144
-depend: [Citizens, Vault]
+api-version: 1.13
+depend: [Citizens, Vault, KiryuLib]
 commands:
   tradenpc:
     usage: /<command>
